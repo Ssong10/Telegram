@@ -39,11 +39,11 @@ def telegram():
         response = requests.post(naver_url, 
                                 headers=headers,
                                 files={'image': image}).json()
+        if response.get('faces'):
+            best = response.get('faces')[0].get('celebrity')
 
-        best = response.get('faces')[0].get('celebrity')
-
-        if best.get('confidence') > 0.1:
-            text = f"{best.get('confidence')*100}%만큼 {best.get('value')}를 닮으셨네요~"
+            if best.get('confidence') > 0.1:
+                text = f"{best.get('confidence')*100}%만큼 {best.get('value')}를 닮으셨네요~"
         else:
             text = '연예인 상은 아닌가봐요'
         api_url = f'{base_url}/sendMessage?chat_id={chat_id}&text={text}'
@@ -64,7 +64,7 @@ def telegram():
             text = response.get('message').get('result').get('translatedText')
         # if 인사말이 오면, 나만의 인사해주기
         elif '안녕' in text or 'hi' in text:
-            text = '안녕, 나는 봇?' 
+            text = '넌 사람이니?' 
         elif '로또' in text:
             text = sorted(random.sample(range(1, 46), 6))
 
